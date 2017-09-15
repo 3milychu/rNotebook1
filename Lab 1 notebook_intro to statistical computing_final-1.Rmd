@@ -1,0 +1,303 @@
+---
+title: "R Notebook for Lab 1, Quantitative Methods"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. Notebooks are a very modern and elegent way to develop code and share with others. Leading scientists and firms like Google use notebooks like this to share and document their code. Notebooks were developed for R within the past months so you can consider yourselves at the leading edge.
+
+Try executing this chunk by clicking the *Run* button within the grey chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+*Lab 1 background.*
+
+We will use R software for your work in this course. It is powerful open-source, free software for data analysis. It can be installed on MacOS, Windows, or Unix/Linux: 
+http://www.r-project.org
+
+To familiarize yourself with the software, watch sections 1.1, 1.2, 1.3, 1.4, and 2.1 at: http://www.youtube.com/watch?v=iffR3fWv4xw&list=PLOU2XLYxmsIK9qQfztXeybpHvru-TrqAP 
+
+A broad overview of R:
+http://www.nytimes.com/2009/01/07/technology/business-computing/07program.html?pagewanted=all 
+
+## 1. Loading Data
+
+Setting working directory.This is a directory in which we want to store our data files, any scripts associated with the analysis. We should establish a working directory at the beginning of the R session. This way anything we created in R can be easily found in the directory. To create a working directory: 
+
+(1) create a folder and place the data file you will be using in that folder. In today's lab we will be using states.csv, drugtreatment.csv and metadata.scv. 
+
+(2) open R, go to lower right window and click files button. 
+
+(3) Search for the folder you created and click it 
+
+(4) Click the More button -> choose set as working directory. Once finished, all the files you work and create in R will be saved in this folder. 
+
+
+Import Dataset. We can just import the file from Import Dataset function at the upper right window. The command may look different for each of you because your working directory would be different. Once the dataset is imported, you will see it in the window automatically.
+
+
+## 2. Overview of the Dataset
+### First, lets see how many rows are in our dataset. How many should we expect?
+
+```{r}
+nrow(states)
+```
+
+### Now lets see how many columns (variables) there are.
+
+```{r}
+ncol(states)
+```
+
+### The head function returns the raw values for the first 6 rows in a data frame. It is a good way to first inspect your data: 
+
+
+```{r}
+head(states)
+```
+
+### Before we go further, let us take a look at the description of the variables in the dataset states.csv. 
+
+```{r}
+View(metadata)
+str(states)
+```
+
+### The summary function summarizes every variable in a data frame. lets have a look at the descriptive statistics of this dataset.What is the average state poverty rate in the US? What is the range?
+```{r}
+summary(states)
+```
+
+### The summary function can also be used to summarize a specific variable in a data frame: 
+
+```{r}
+summary(states$URBAN)
+```
+
+### Notice that the output of the summary function changes depending on the level of measurement:
+
+```{r}
+summary(states$REGION)
+```
+
+### The colnames function returns the names of the variables in the data frame: 
+
+```{r}
+colnames(states)
+```
+
+### The class function returns the class of a specific variable:
+
+```{r}
+class(states$REGION)
+```
+
+### The class function is particularly helpful in determining the level of measurement of a variable. 
+
+
+## 3. Descriptive statistics for variables
+
+### a. Descriptive Statistics for nominal or ordinal variables
+
+### The mode. The mode is somewhat tricky to get in R, plug this in to here:
+
+```{r}
+names(sort(-table(states$REGION)))[1] # number 1 refers to category that appears most of the times (mode). You can play around the number to get the second popular states in the dataset.
+```
+
+### Frequency Tables
+
+Frequency tables are appropriate for nominal or ordinal variables with only a few values.  Creating frequency tables for interval-ratio variables will render large useless tables. First, look at the breakdown of states by region:
+
+The table function generates a frequency table:
+```{r}
+table(states$REGION)
+```
+
+
+*WARNING: When there are missing values, the table function does not display a count of them. *
+
+### The prop.table function can be nested around the table function to get the proportions of the frequencies:
+```{r}
+prop.table(table(states$REGION))
+```
+
+### b. Descriptive Statistics for interval-ratio variables
+
+For interval-ratio measured variables, several functions can be used to summarize central tendency and dispersion.  In these examples, we'll look at the variation in the rate of population per square mile. 
+
+To start, the summary function gives valuable information about a distribution: the mean, median, quartiles, min, and max:
+```{r}
+summary(states$DENSITY)
+```
+
+### We can also use mean(), max(), min() functions to get the particular value as needed.
+
+```{r}
+mean(states$DENSITY)
+max(states$DENSITY)
+min(states$DENSITY)
+```
+
+### In case there are missing values of the variables, you need add na.rm = TRUE in the function. For example mean(states$DENSITY, na.rm = TRUE)
+
+### The range function in R also give you the min and max:
+```{r}
+range(states$DENSITY)
+```
+
+### But to get the range as it's defined in the textbook, you have to subtract the min from the max: 
+```{r}
+max(states$DENSITY) - min(states$DENSITY)
+```
+
+
+### The var function returns the variance: 
+```{r}
+var(states$DENSITY)
+```
+
+### The sd function returns the standard deviation: 
+```{r}
+sd(states$DENSITY)
+```
+
+
+### What's the standard deviation squared? 
+```{r}
+sd(states$DENSITY) ^ 2
+
+```
+
+### What's the square root of the variance? 
+```{r}
+sqrt(var(states$DENSITY))
+```
+
+
+### The IQR function returns the interquartile range: the difference between the upper and lower quartiles:
+```{r}
+IQR(states$DENSITY)
+```
+
+
+### To get the value of a specific percentile, use the quantile function. Find the value of the 60th percentile:
+```{r}
+quantile(states$DENSITY, 0.60, na.rm=TRUE)
+```
+
+
+### You can also use the quantile function with the seq function to get the percentiles of a sequence (such as deciles): 
+```{r}
+quantile(states$DENSITY, seq(0, 1, 0.1))
+```
+
+
+## Practice
+
+Data frame: states
+
+1. What is the average number of doctors per 100,000 population? 
+
+2. What is the maximum number of doctors per 100,000 population? 
+
+3. Describe the percentage of those with a high school degree vary across the U.S.? 
+
+4. What are the quantiles for birth rate? 
+
+5. What is the median poverty rate? 
+
+6. Is there skew in poverty rate? 
+
+7. How many states are in the Midwest? 
+
+### Let us creat a new notebook and work on these questions together.
+
+
+
+# Advanced Extension for those who want to go further
+
+Here are some advanced things they could try for self study. Try applying some of this code to your dataset. Below is a Boxplot for the beck variable. Try to do a boxplot for the age variable. Boxplots are one of the most economical and simple visualizations we have. They show you the mean, median, IQR, and outliers (and, optionally, other distributional states) in one simple display.
+
+```{r}
+boxplot(drugtreatment$BECK)
+```
+Now, you can save documents to a PDF like this (of course you'd need to use your directory.  It will just say "null device" in the output but it should create a PDF file in the appointed directory. Here I will create two plots: 1) a boxplot and 2) another kind of plot that we will work with later in the course called a scatterplot. Both will be saved to a PDF file. 
+
+```{r}
+pdf("boxplot2") # name the figure. As we already create the working directory at the beginning, we do not need to write a full path code to save the figures. 
+boxplot(drugtreatment$BECK)
+pairs(~ drugtreatment$AGE+drugtreatment$BECK)
+dev.off()
+
+```
+
+GGplot is a very powerful R procedure. First you have to install it which I do below. Then I show an example. Maybe change "beck" to "age" to get some familiarity. First we have to install the package. We only have to do this once. But we always have to add the package to the library.
+
+```{r}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+```{r}
+ggplot(drugtreatment,aes(y=AGE,x=IVHX, group=IVHX)) + geom_boxplot()
+```
+
+
+Here is how you create a function. This function is called double.num. A function is a set of code that you want to call again and again. You need to declare a function with function(x). Then, in the curly brackets you list the code that you want to apply to the variable (which you declared as "x"). Then you use the function by plugging in a number for x. I realize this is advanced but see if you can follow the logic. First see if you can double another number like 6. Then see if you can create a function that multiplies by 3 and call it "triple".
+
+```{r}
+#this is how you develop a function
+double.num <- function(x)
+{
+  x*2
+}
+
+double.num(5)
+```
+
+```{r}
+trible.num <- function(x){
+  x*3
+}
+
+trible.num(4)
+```
+
+
+Here I want to give you a little taste of what it is like to reshape data. The data now are at the person level of analysis. There is a package called DPLYR which, like SQL, can help you change the unit of analysis. There are two levels of the site variable. The following lines collapse the dataset from the person level to the site level of analysis. The code then saves a new file called "sitelevel". If you follow this try to create a file called "IV level" which shows average age by levels of the IV drughistory variable which is called ivhx
+
+```{r}
+
+install.packages("dplyr")
+library(dplyr)
+
+sitelevel<-aggregate(AGE~SITE,drugtreatment, mean)
+
+
+View(sitelevel)
+```
+
+DPLYr has some other nice features like filtering. Here we only select certain records and save to a dataset. We select individuals who are older then 40 and in drugtreatment. We save this file to a new file called "oldtreatment". This is a common data reshaping technique called "subsetting". Note the obs count under the "data" tab. Try to select individuals who are 25 or younger and call the new file "youngtreatment"
+
+```{r}
+oldtreatment <- filter(drugtreatment,AGE > 40) 
+View(oldtreatment)
+
+```
+
+```{r}
+youngtreatment <- filter(drugtreatment, AGE <= 25)
+View(youngtreatment)
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+## Save your work in both HTML file and PDF file (open the HTML file and choose print then save as PDF). 
+
+
