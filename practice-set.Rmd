@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+## Practice
+
+Data frame: states
+
+1. What is the average number of doctors per 100,000 population? 
+
+```{r}
+summary(states$DOCTORS)
+mean(states$DOCTORS)
+```
+
+2. What is the maximum number of doctors per 100,000 population? 
+
+```{r}
+max(states$DOCTORS)
+```
+
+3. Describe the percentage of those with a high school degree vary across the U.S.? 
+
+```{r}
+#prop.table(table(states$HSGRAD))
+#table(states$HSGRAD)
+summary(states$HSGRAD)
+```
+
+4. What are the quantiles for birth rate? 
+
+```{r}
+quantile(states$BRATE, seq(0, 1, 0.2))
+```
+
+
+5. What is the median poverty rate? 
+
+```{r}
+median(states$POVERTY)
+```
+
+
+6. Is there skew in poverty rate? 
+
+```{r}
+summary(states$POVERTY)
+```
+
+
+7. How many states are in the Midwest? 
+```{r}
+head(states)
+table(states$REGION)
+prop.table(table(states$REGION))
+```
