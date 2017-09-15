@@ -78,6 +78,9 @@ summary(states)
 ```{r}
 summary(states$URBAN)
 ```
+```{r}
+summary(states$MOBILITY)
+```
 
 ### Notice that the output of the summary function changes depending on the level of measurement:
 
