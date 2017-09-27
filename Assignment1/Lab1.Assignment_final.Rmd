@@ -20,23 +20,65 @@ Now, lets proceed to the lab which will be conducted in this notebook. Please sh
 
 1.	List the level of measurement for each of the following variables:
  
-a.	hdicat
-b.	urban2004
-c.	internet03
-d.	educ04
+a.	hdicat: Nominal
+b.	urban2004: Interval-ratio
+c.	internet03: Interval-ratio
+d.	educ04: Interval-ratio
  
 2.	What is the average public expenditure on education (% of GDP) in 2004? 
 
+4.996
+```{r}
+summary(country)
+```
+
+
 3.	What is the minimum urban population rate (% of total) in 2004?
+
+9.7
+
+```{r}
+min(country$urban2004)
+```
 
 4.	What is the median for internet users per 1,000 people in 2003?
 
+73.0
+
+```{r}
+summary(country$internet03)
+```
+
 5.	What is the 95th percentile for internet users per 1,000 people in 2003? 
 
-6.	Compare the median and 95th percentile for internet users per 1,000 people in 2003.  What does this comparison tell you about the distribution of this variable? 
+629 
+```{r}
+quantile(country$internet03, 0.95, na.rm=TRUE)
+```
+
+6.	Compare the median and 95th percentile for internet users per 1,000 people in 2003.  What does this comparison tell you about the distribution of this variable?
+
+```{r}
+summary(country$internet03)
+quantile(country$internet03, 0.95, na.rm=TRUE)
+```
+
+It is highly positively skewed with the median much lower than the mean and a few very high number of internet users per 1,000 people with the 95th percentile tailing to 629 internet users per 1,000 people.
 
 7.	Describe hdicat. Use descriptive statistics, if appropriate. 
 
-8.	Why is it important to use Frequency Tables for nominal and ordinal variables and other descriptive statistics for interval- ratio variables?  
+hdicat is a nominal level variable that measures if a country is classified as low, medium or high development. Around 32 (18%) of countries in the dataset are classified as low development, 88 (49.7%) as medium development and 57 (32%) as high development. The mode for hdicat is "Medium Development".
+
+```{r}
+summary(country$hdicat)
+table(country$hdicat)
+prop.table(table(country$hdicat))
+names(sort(-table(country$hdicat)))[1]
+```
+
+
+8.	Why is it important to use Frequency Tables for nominal and ordinal variables and other descriptive statistics for interval- ratio variables?
+
+It is important to use Frequency Tables for nominal and ordinal variables because median and mean are not typically used at this level of measurement. Calculating mode and frequency is more appropriate. For interval-ratio variables, median, mean and other descriptive statistics are appropriate for the level of measurement.
 
 # Submit to Canvas in both HTML file and PDF file 
