@@ -89,19 +89,23 @@ View(sitelevel)
 DPLYr has some other nice features like filtering. Here we only select certain records and save to a dataset. We select individuals who are older then 40 and in drugtreatment. We save this file to a new file called "oldtreatment". This is a common data reshaping technique called "subsetting". Note the obs count under the "data" tab. Try to select individuals who are 25 or younger and call the new file "youngtreatment"
 
 ```{r}
-oldtreatment <- filter(drugtreatment,age > 40) 
+oldtreatment <- filter(drugtreatment, age > 40) 
 View(oldtreatment)
 
 ```
+```{r}
+overFortyTreatment <- filter(drugtreatment, age >= 40)
+View(overFortyTreatment)
+```
 
-selecting individuals 25 and younger: "youngtreatment"
+selecting individuals younger than 25: "youngtreatment"
 ```{r}
 youngtreatment <- filter(drugtreatment, age < 25)
 View(youngtreatment)
 ```
 
 ```{r}
-youngtreatment <- filter(drugtreatment, AGE <= 25)
+youngtreatment <- filter(drugtreatment, age <= 25)
 View(youngtreatment)
 ```
 

@@ -848,10 +848,78 @@ dev.off()
 <p>GGplot is a very powerful R procedure. First you have to install it which I do below. Then I show an example. Maybe change “beck” to “age” to get some familiarity. First we have to install the package. We only have to do this once. But we always have to add the package to the library.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5zdGFsbC5wYWNrYWdlcyhcImdncGxvdDJcIilcbmxpYnJhcnkoZ2dwbG90MilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5zdGFsbC5wYWNrYWdlcyhcImdncGxvdDJcIilcblxuYGBgIn0= -->
 <pre class="r"><code>install.packages(&quot;ggplot2&quot;)
-library(ggplot2)</code></pre>
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiYWxzbyBpbnN0YWxsaW5nIHRoZSBkZXBlbmRlbmNpZXMg4oCYY29sb3JzcGFjZeKAmSwg4oCYUkNvbG9yQnJld2Vy4oCZLCDigJhkaWNocm9tYXTigJksIOKAmG11bnNlbGzigJksIOKAmGxhYmVsaW5n4oCZLCDigJh2aXJpZGlzTGl0ZeKAmSwg4oCYZ3RhYmxl4oCZLCDigJhwbHly4oCZLCDigJhyZXNoYXBlMuKAmSwg4oCYc2NhbGVz4oCZLCDigJhsYXp5ZXZhbOKAmVxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL21hY29zeC9tYXZlcmlja3MvY29udHJpYi8zLjMvY29sb3JzcGFjZV8xLjMtMi50Z3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtZ3ppcCcgbGVuZ3RoIDQzMjYwNCBieXRlcyAoNDIyIEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgNDIyIEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vbWFjb3N4L21hdmVyaWNrcy9jb250cmliLzMuMy9SQ29sb3JCcmV3ZXJfMS4xLTIudGd6J1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi94LWd6aXAnIGxlbmd0aCAyNDE4MyBieXRlcyAoMjMgS0IpXG49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuZG93bmxvYWRlZCAyMyBLQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL21hY29zeC9tYXZlcmlja3MvY29udHJpYi8zLjMvZGljaHJvbWF0XzIuMC0wLnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggMTQ1NDA1IGJ5dGVzICgxNDEgS0IpXG49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuZG93bmxvYWRlZCAxNDEgS0JcblxudHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvbWF2ZXJpY2tzL2NvbnRyaWIvMy4zL211bnNlbGxfMC40LjMudGd6J1xuQ29udGVudCB0eXBlICdhcHBsaWNhdGlvbi94LWd6aXAnIGxlbmd0aCAxMzM2MzUgYnl0ZXMgKDEzMCBLQilcbj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG5kb3dubG9hZGVkIDEzMCBLQlxuXG50cnlpbmcgVVJMICdodHRwczovL2NyYW4ucnN0dWRpby5jb20vYmluL21hY29zeC9tYXZlcmlja3MvY29udHJpYi8zLjMvbGFiZWxpbmdfMC4zLnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggMzkxNTMgYnl0ZXMgKDM4IEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgMzggS0JcblxudHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvbWF2ZXJpY2tzL2NvbnRyaWIvMy4zL3ZpcmlkaXNMaXRlXzAuMi4wLnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggNTQxMTAgYnl0ZXMgKDUyIEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgNTIgS0JcblxudHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvbWF2ZXJpY2tzL2NvbnRyaWIvMy4zL2d0YWJsZV8wLjIuMC50Z3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtZ3ppcCcgbGVuZ3RoIDU3MTYzIGJ5dGVzICg1NSBLQilcbj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG5kb3dubG9hZGVkIDU1IEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vbWFjb3N4L21hdmVyaWNrcy9jb250cmliLzMuMy9wbHlyXzEuOC40LnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggODA1MDcxIGJ5dGVzICg3ODYgS0IpXG49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuZG93bmxvYWRlZCA3ODYgS0JcblxudHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvbWF2ZXJpY2tzL2NvbnRyaWIvMy4zL3Jlc2hhcGUyXzEuNC4yLnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggMjAyMzQzIGJ5dGVzICgxOTcgS0IpXG49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PVxuZG93bmxvYWRlZCAxOTcgS0JcblxudHJ5aW5nIFVSTCAnaHR0cHM6Ly9jcmFuLnJzdHVkaW8uY29tL2Jpbi9tYWNvc3gvbWF2ZXJpY2tzL2NvbnRyaWIvMy4zL3NjYWxlc18wLjUuMC50Z3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtZ3ppcCcgbGVuZ3RoIDMzNjY4MyBieXRlcyAoMzI4IEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgMzI4IEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vbWFjb3N4L21hdmVyaWNrcy9jb250cmliLzMuMy9sYXp5ZXZhbF8wLjIuMC50Z3onXG5Db250ZW50IHR5cGUgJ2FwcGxpY2F0aW9uL3gtZ3ppcCcgbGVuZ3RoIDEyMjQ4NyBieXRlcyAoMTE5IEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgMTE5IEtCXG5cbnRyeWluZyBVUkwgJ2h0dHBzOi8vY3Jhbi5yc3R1ZGlvLmNvbS9iaW4vbWFjb3N4L21hdmVyaWNrcy9jb250cmliLzMuMy9nZ3Bsb3QyXzIuMi4xLnRneidcbkNvbnRlbnQgdHlwZSAnYXBwbGljYXRpb24veC1nemlwJyBsZW5ndGggMjc2MDg0MiBieXRlcyAoMi42IE1CKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgMi42IE1CXG4ifQ== -->
+<pre><code>also installing the dependencies ‘colorspace’, ‘RColorBrewer’, ‘dichromat’, ‘munsell’, ‘labeling’, ‘viridisLite’, ‘gtable’, ‘plyr’, ‘reshape2’, ‘scales’, ‘lazyeval’
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/colorspace_1.3-2.tgz'
+Content type 'application/x-gzip' length 432604 bytes (422 KB)
+==================================================
+downloaded 422 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/RColorBrewer_1.1-2.tgz'
+Content type 'application/x-gzip' length 24183 bytes (23 KB)
+==================================================
+downloaded 23 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/dichromat_2.0-0.tgz'
+Content type 'application/x-gzip' length 145405 bytes (141 KB)
+==================================================
+downloaded 141 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/munsell_0.4.3.tgz'
+Content type 'application/x-gzip' length 133635 bytes (130 KB)
+==================================================
+downloaded 130 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/labeling_0.3.tgz'
+Content type 'application/x-gzip' length 39153 bytes (38 KB)
+==================================================
+downloaded 38 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/viridisLite_0.2.0.tgz'
+Content type 'application/x-gzip' length 54110 bytes (52 KB)
+==================================================
+downloaded 52 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/gtable_0.2.0.tgz'
+Content type 'application/x-gzip' length 57163 bytes (55 KB)
+==================================================
+downloaded 55 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/plyr_1.8.4.tgz'
+Content type 'application/x-gzip' length 805071 bytes (786 KB)
+==================================================
+downloaded 786 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/reshape2_1.4.2.tgz'
+Content type 'application/x-gzip' length 202343 bytes (197 KB)
+==================================================
+downloaded 197 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/scales_0.5.0.tgz'
+Content type 'application/x-gzip' length 336683 bytes (328 KB)
+==================================================
+downloaded 328 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/lazyeval_0.2.0.tgz'
+Content type 'application/x-gzip' length 122487 bytes (119 KB)
+==================================================
+downloaded 119 KB
+
+trying URL 'https://cran.rstudio.com/bin/macosx/mavericks/contrib/3.3/ggplot2_2.2.1.tgz'
+Content type 'application/x-gzip' length 2760842 bytes (2.6 MB)
+==================================================
+downloaded 2.6 MB</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5UaGUgZG93bmxvYWRlZCBiaW5hcnkgcGFja2FnZXMgYXJlIGluXG5cdC92YXIvZm9sZGVycy82Ny80MXJnOHFiczQ2c2Z3NXkxajFuZjZyeTQwMDAwZ24vVC8vUnRtcDZjWUV3My9kb3dubG9hZGVkX3BhY2thZ2VzXG4ifQ== -->
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/67/41rg8qbs46sfw5y1j1nf6ry40000gn/T//Rtmp6cYEw3/downloaded_packages</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
