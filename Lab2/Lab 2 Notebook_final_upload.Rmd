@@ -1,0 +1,198 @@
+---
+title: "Lab2 R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+##Setting working directory
+
+1. Create a folder that saves all the dataset and files
+2. Open R -> go to top Main menu -> Session -> set working directory -> choose directory -> choose your folder you want to make it as working directory
+3. use setwd() function to check your working directory
+
+
+```{r}
+getwd()
+```
+
+DATA: lowbwt
+
+About the data: The goal of this study was to identify risk factors associated with giving birth to a low birth weight baby (weighing less than 2500 grams). Data were collected on 189 women, 59 of which had low birth weight babies and 130 of which had normal birth weight babies. Four variables which were thought to be of importance were age, weight of the subject at her last menstrual period, race, and the number of physician visits during the first trimester of pregnancy.
+
+Low birth weight is an outcome that has been of concern to physicians for years. This is due to the fact that infant mortality rates and birth defect rates are very high for low birth weight babies. A woman's behavior during pregnancy (including diet, smoking habits, and receiving prenatal care) can greatly alter the chances of carrying the baby to term and, consequently, of delivering a baby of normal birth weight. SOURCE: Hosmer and Lemeshow (2000) Applied Logistic Regression: Second Edition. These data are copyrighted by John Wiley & Sons Inc. and must be acknowledged and used accordingly. Data were collected at Baystate Medical Center, Springfield, Massachusetts during 1986.
+
+
+#Graphs: Pie Chart & Bar Chart
+Pie charts and bar charts are appropriate for nominal or ordinal variables with only a few values. To get charts for the variable race do the following. First, lets do a pie chart.
+
+Show a frequency table for RACE 
+```{r}
+table(lowbwt$RACE)
+prop.table(table(lowbwt$RACE))
+```
+
+```{r}
+pie(table(lowbwt$RACE), main="Race_pie", col=c("red", "blue", "green"), labels=c('white','black','other')) 
+```
+
+Here is how to do a bar chart.
+```{r}
+barplot(table(lowbwt$RACE), main="Race_bar", xlab="Race", names.arg = c('white','black','other'))
+```
+
+#Graphs: Histogram
+
+Histograms are appropriate for interval-ratio variables with only a few values. Histograms can be obtained in the Explore function.  To get summary statistics and a histogram for the variable age. Does this seem like a normal distribution? Where are ages concentrated in this dataset?
+```{r}
+hist(lowbwt$AGE)
+```
+
+#Kernal density plots
+Kernal density plots show the same informatoin as histograms but by using statistical smoothing approaches create a more generalizable perspective. 
+
+```{r}
+d <- density(lowbwt$AGE) # returns the density data 
+ plot(d) # plots the results
+```
+
+That is fine, but we can do better. First, you'll need to install the ggplot package. This package is heavily used in applied work. ggplot comes with a whole data visualization "grammar". We are just going to use it for the basics but you may want to learn more about it.  Then you can apply the code.
+So, now lets use the ggplot package to get a nicer plot and lets overlay two plots on top of each other. Lets look at a plot of age based on the low birth weight dummy variable
+```{r}
+#first we need to install the ggplot2 package
+install.packages("ggplot2")
+library(ggplot2)
+
+```
+
+```{r}
+#then we have to change the LOW variable into a "factor" variable so that it is not treated as a continous variable. This transformation is often useful when visualizating data
+lowbwt$LOW<-as.factor(lowbwt$LOW) # LOW has two values. 0 = Birth Weight >= 2500g, 1 = Birth Weight < 2500g
+ggplot(lowbwt, aes(x=AGE, group=LOW, col=LOW)) + geom_density() 
+
+```
+
+
+
+This is an interesting plot called a violin plot. It combines elements of boxplots and kernal density plots. To create them you need the vioplot package. 
+
+# Boxplots
+
+```{r}
+boxplot(lowbwt$AGE)
+```
+
+
+# Violin Plots
+```{r}
+ install.packages("vioplot")
+ library(vioplot)
+ 
+```
+
+```{r}
+vioplot(lowbwt$AGE)
+title("Violin Plots of Age")
+```
+
+
+#Crosstabs
+
+A crosstab displays the joint frequency distributions of two nominal or ordinal variables. Crosstabs can help show whether there is a relationship between two nominal or ordinal variables.
+
+```{r}
+table(lowbwt$HT, lowbwt$RACE)
+``` 
+
+But this looks sort of ugly. It is also very hard to interpret because the column sizes vary. Let's make a nicer and more useful table. first we need another package (the "gmodels" package)
+
+```{r}
+install.packages("gmodels")
+library(gmodels)
+
+```
+
+```{r}
+#We can look at another crosstab using the gmodels package:
+CrossTable(lowbwt$HT, lowbwt$RACE, expected=TRUE, format="SPSS")
+```
+
+
+We can also use bar charts to show the same information, like this
+```{r}
+#creates the bar graph
+install.packages("sjPlot")
+library(sjPlot)
+sjp.xtab(lowbwt$RACE,lowbwt$HT, title = "Race by Hypertension")
+```
+
+
+
+
+Assignment 2
+Create a New R Notebook (*.NB) File > New File > R Notebook
+Name it "Assignment2.R Notebook" and save it in the Home folder.
+
+Data frame for this assignment:  lowbwt
+1.	List the level of measurement for each of the following variables:
+
+
+a. LOW
+b. SMOKE	
+c. BWT
+
+2.	Show a frequency table and an appropriate graph for the variable Smoking Status During Pregnancy.
+
+3.	Describe the distribution of Smoking Status During Pregnancy.
+
+4.	Show a frequency table and an appropriate graph for the variable Low Birth Weight.
+
+5.	Show summary statistics and an appropriate graph for Birth Weight in Grams(BWT).
+
+6.  Describe the distribution of Birth Weight in Grams(BWT).
+
+7.  Create a kernal density plot to describe the distribution of Birth Weight in Grams (BWT) for those who suffer from uterine irritability and then for those who do not. Try to use the code to overlay these plots on top of each other. Describe the pattern. The uterine irritablity variable  is called UI. Remember you need install and library packages ggplot2.packages before creating this kernal density plot. 
+
+8.	Show a crosstab of Low Birth Weight BY Smoking Status During Pregnancy. Be sure to show and interpret the percentages (interpreting the column percenages is suffecient)
+
+9.	Does there appear to be a relationship between Low Birth Weight and Smoking Status During Pregnancy? Uterine Irritability? Explain.
+
+Submit to Canvas: your notebook. The notebook should include your code, the output and (importantly!) your interpretation of the findings.
+
+
+Advanced material
+
+
+#Here's an example of a density plot overlay which also shows the mean of two groups. Here I use the drug treatment dataset which we worked with last time. The example looks at the beck depression scale by site. Study participants were not randomized by site. In this example we show the mean on the plot itself. 
+
+```{r}
+#first lets read in the drug treatment dataset as we'll use that for the example. We will also need a new package called plyr. This is a very popular package and it is shown in the advanced examples from last lab
+
+install.packages("plyr")
+library(plyr)
+
+drugtreatment$SITE <- factor(drugtreatment$SITE) # set site as factor rather than interval ratio variable
+
+becsite <- ddply(drugtreatment, "SITE", summarise, grp.mean=mean(BECK))
+head(becsite)
+
+c<-ggplot(drugtreatment, aes(x=BECK, group=SITE, col=SITE)) +
+  geom_density(size=1)+
+  geom_vline(data=becsite, aes(xintercept=grp.mean, color=SITE),
+             linetype="dashed", size=1)
+
+c
+```
+   
+
+
