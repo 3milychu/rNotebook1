@@ -1,0 +1,119 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+Assignment 3
+Create a New R Notebook and save it as both html format and PDF format. 
+
+Data frame for this assignment:  lowbwt
+1.	List the level of measurement for each of the following variables:
+
+a.	LOW
+b.	LWT (Weight in Pounds at the Last Menstrual Period)
+
+2.	Why is it NOT appropriate to create a crosstab using the two variables in the previous question?
+
+3.	Recode the variable LWT into a new ordinal variable.
+
+4.	Show a frequency table of the new ordinal LWT variable (that you created in #3) and explain your coding scheme.
+
+5.	Show a crosstab of Low Birth Weight (LOW) BY Weight in Pounds at the Last Menstrual Period, making sure to use variables at the appropriate levels of measurement.
+
+6.	Does there appear to be a relationship between Low Birth Weight and Mother's weight in pounds at the last menstrual period? Explain.
+
+Submit to Canvas: your answers to these questions AND the R code you used to get the answers.
+
+
+#Advanced material
+
+Lets create a dummy variable based on a high level of gdp. As a reminder dummy variables are used very heavily in quantitative analysis. Better called "indicator variables" they use a binary coding scheme in which "1" indicates the presence of a characteristic and "0" the absense. First, lets look at the GDP variable to get a good definition of "high"
+
+```{r}
+summary(country$gdp)
+hist(country$gdp)
+```
+
+
+The third quartile value is 7876 so lets go above that and call that "high". Here I am going to use "if/else" logic which is common in classical programming. Note how simple the code is.
+```{r}
+country$gdphigh <- ifelse(country$gdp>7876,1,0)
+tapply(country$gdp, country$gdphigh, summary)
+```
+
+When you do things over and over in programming you should eventually get used to creating functions. Functions boil down repetive tasks to a couple of fundamental steps. It is always good to first "hard code" a process (like we did above) before generalizing to a functoin. When we create a function we have to name it something and specify the ingredients we are going to add to the function. Here I am calling the function dummygen2 and am supplying 4 ingredients which, for concision, I call elements a,b,c,d
+a is the name of the dataset (in this example it is country)
+b is the name of the variable I want to create (here it would be gdphigh)
+c is the continous variable I want to create a dummy from (here gdp)
+d is the threshold i want to set up for "high" (here it is 7876)
+```{r}
+
+dummygen2 <- function(a,b,c,d) {
+  
+  a[,b] <- ifelse(a[,c] >d,1,0)
+  
+return(a)
+}
+
+#Now I invoke the function
+dummygen2(country,"gdphigh2","gdp",7876)->country
+tapply(country$gdp, country$gdphigh2, summary)
+```
+Here is another way to create categorical variables
+Here we will create various breakpoints and then use the cut function
+```{r}
+brks <- c(0,40,50,60,70, Inf)  	# Note: 1 
+country$lifespan.range <- cut(country$lifem,
+                          breaks=brks, include.lowest=T) 	# Note: 2 
+summary(country$lifespan.range)
+table(country$lifespan.range)
+```
+Here is a more general dummy variable functoin. This one replaces "na" with zero. Make sure that is what you want! There are no instances where this particular code would make sense with this dataset as there are no categorical source variables but you can use this with survey data which has a long of such variables. I don't actually apply this function here. 
+```{r}
+
+dummygen <- function(a,b,c,d) {
+  
+  a[,b] <- ifelse(a[,c] ==d,1,0)
+  a[,b] <- ifelse(is.na(a[,b]) , 0, a[,b])
+  return(a)
+}
+```
+
+
+Missing values present many issues in data analysis. We'll be dealing with this in future labs.
+Here is how you can visualize missings
+```{r}
+install.packages("VIM")
+library(VIM)
+missings_plot <- aggr(country, col=c('navyblue','red'), only.miss=TRUE, numbers=TRUE, sortVars=TRUE, labels=names(country), gap=3, ylab=c("Histogram of missing data","Pattern"))
+```
+
+You can "fill in" missing values with the "mice" function. Here is how you would do that. I'll explain how this works in lab.  This will take care of most missings except for on some of the new factor variables which should be handled differently
+
+```{r}
+install.packages("mice")
+library(mice)
+set.seed(144) # random number generator
+imputed_country = complete(mice(country))
+missings_plot <- aggr(imputed_country, col=c('navyblue','red'), only.miss=TRUE, numbers=TRUE, sortVars=TRUE, labels=names(imputed_country), gap=3, ylab=c("Histogram of missing data","Pattern"))
+```
+```
+
+
+
+
+
+
+

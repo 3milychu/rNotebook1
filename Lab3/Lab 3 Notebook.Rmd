@@ -1,0 +1,219 @@
+---
+title: "Lab 3 Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+DATA: country
+
+Often we need to change the level of measurement of a variable. It is common, for example, to collapse interval-ratio level variables into nominal or ordinal variables. It is not possible to transform nominal or ordinal variables into interval-ratio variables. We can create a new nominal/ordinal version of an interval-ratio variable by recoding it. Recoding a variable should follow this important rule: Variables should be exhaustive and mutually exclusive (meaning: every observation must fit into a category, but only one category).
+
+In this lab we will learn some basic variable creation and recoding techniques. As usual the lab gets into some more advanced applications (including how to create R functions which can automate this process)
+
+Before you recode a variable, you need to decide the coding scheme. To decide the coding scheme, you need to understand the variable's distribution:
+
+Recode the variable physicians into an ordinal variable
+
+First, look at the distribution of physicians:
+```{r}
+summary(country$physicians) 
+hist(country$physicians)
+```
+
+Here the default histogram is not so helpful. So lets see what the kernal density plot shows and if all else fails the quantile function will get us what we need
+```{r}
+d <- density(country$physicians,na.rm=TRUE) # returns the density data 
+plot(d) 
+
+quantile(country$physicians, seq(0, 1, 0.1), na.rm=TRUE)
+```
+
+Second, use subset assignment statements to assign an ordinal coding scheme for a new variable that we'll name  physiciansCat
+```{r}
+country$physiciansCat[country$physicians <= 25] <- 1
+country$physiciansCat[country$physicians > 25 & country$physicians <= 100] <- 2
+country$physiciansCat[country$physicians > 100 & country$physicians <= 250] <- 3
+country$physiciansCat[country$physicians > 250] <- 4
+```
+
+Third, convert the new variable to a "factor" (to indicate that it's nominal or ordinal) and assign value labels:
+```{r}
+country$physiciansCat <- factor(country$physiciansCat, labels=c('0-25 physicians per 100k', '26-100 physicians per 100k', '101-250 physicians per 100k', '>250 physicians per 100k'))
+```
+If you need to start over, Null out the new variable. DONT RUN THIS UNLESS YOU HAVE A PROBLEM!!
+```{r}
+ country$physiciansCat <- NULL
+```
+
+Fourth, 
+Check your work:
+1.	look at the distribution of the new variable and compare it to the distribution of the old variable
+2.	use the tapply function to summarize the old variable across categories of the new ordinal variable
+```{r}
+table(country$physiciansCat, useNA="ifany") # distribution of new variable 
+summary(country$physicians)   # distribution of old variable 
+tapply(country$physicians, country$physiciansCat, summary) 
+```
+IN-CLASS EXERCISE
+
+Recode mort2004 into an ordinal variable:
+
+1.	Look at its distribution to decide on a coding scheme that creates THREE categories
+2.	Create a new variable that implements your coding scheme
+3.	Convert it to a factor and label the values
+4.	Create the description variable
+5.	Check your work
+6.	Create a crosstab of physicians and infant mortality
+
+1. Look at its distribution to decide on a coding scheme that creates THREE categories
+
+a. First, look at the distribution of mort2004
+```{r}
+summary(country$mort2004) 
+hist(country$mort2004)
+quantile(country$mort2004, seq(0, 1, 0.05), na.rm=TRUE)
+```
+b. Next, use subset assignment statements to assign an ordinal coding scheme for a new variable that we'll name mort2004Cat
+```{r}
+country$mort2004Cat[country$mort2004 <= 15] <- 1
+country$mort2004Cat[country$mort2004 > 15 & country$mort2004 <= 50] <- 2
+country$mort2004Cat[country$mort2004 > 50] <- 3
+```
+2 &3&4. Convert the new variable to a "factor" (to indicate that it's nominal or ordinal) and assign value labels
+```{r}
+country$mort2004Cat <- factor(country$mort2004Cat, labels=c('Low: 0-15 infant deaths per 1k', 'Medium: 16-50 infant deaths per 1k', 'High: >50 infant deaths per 1k'))
+```
+
+5. Check your work:
+1.	look at the distribution of the new variable and compare it to the distribution of the old variable
+2.	use the tapply funtion to summarize the old variable across categories of the new ordinal variable
+```{r}
+table(country$mort2004Cat, useNA="ifany") # distribution of new variable summary(country$mort2004)  # distribution of old variable 
+tapply(country$mort2004, country$mort2004Cat, summary)                                                                    
+```
+
+6.  Create a crosstab of physicians and infant mortality
+
+```{r}
+table(country$physiciansCat, country$mort2004Cat, dnn = c("Physicians", "Infant Mortality Rate")) 
+```
+
+
+```{r}
+prop.table(table(country$physiciansCat, country$mort2004Cat, dnn = c("Physicians", "Infant Mortality Rate")), 2) # column percentage
+```
+
+
+Assignment 3
+Create a New R Notebook and save it as both html format and PDF format. 
+
+Data frame for this assignment:  lowbwt
+1.	List the level of measurement for each of the following variables:
+
+a.	LOW
+b.	LWT (Weight in Pounds at the Last Menstrual Period)
+
+2.	Why is it NOT appropriate to create a crosstab using the two variables in the previous question?
+
+3.	Recode the variable LWT into a new ordinal variable.
+
+4.	Show a frequency table of the new ordinal LWT variable (that you created in #3) and explain your coding scheme.
+
+5.	Show a crosstab of Low Birth Weight (LOW) BY Weight in Pounds at the Last Menstrual Period, making sure to use variables at the appropriate levels of measurement.
+
+6.	Does there appear to be a relationship between Low Birth Weight and Mother's weight in pounds at the last menstrual period? Explain.
+
+Submit to Canvas: your answers to these questions AND the R code you used to get the answers.
+
+
+#Advanced material
+
+Lets create a dummy variable based on a high level of gdp. As a reminder dummy variables are used very heavily in quantitative analysis. Better called "indicator variables" they use a binary coding scheme in which "1" indicates the presence of a characteristic and "0" the absense. First, lets look at the GDP variable to get a good definition of "high"
+
+```{r}
+summary(country$gdp)
+hist(country$gdp)
+```
+
+
+The third quartile value is 7876 so lets go above that and call that "high". Here I am going to use "if/else" logic which is common in classical programming. Note how simple the code is.
+```{r}
+country$gdphigh <- ifelse(country$gdp>7876,1,0)
+tapply(country$gdp, country$gdphigh, summary)
+```
+
+When you do things over and over in programming you should eventually get used to creating functions. Functions boil down repetive tasks to a couple of fundamental steps. It is always good to first "hard code" a process (like we did above) before generalizing to a functoin. When we create a function we have to name it something and specify the ingredients we are going to add to the function. Here I am calling the function dummygen2 and am supplying 4 ingredients which, for concision, I call elements a,b,c,d
+a is the name of the dataset (in this example it is country)
+b is the name of the variable I want to create (here it would be gdphigh)
+c is the continous variable I want to create a dummy from (here gdp)
+d is the threshold i want to set up for "high" (here it is 7876)
+```{r}
+
+dummygen2 <- function(a,b,c,d) {
+  
+  a[,b] <- ifelse(a[,c] >d,1,0)
+  
+return(a)
+}
+
+#Now I invoke the function
+dummygen2(country,"gdphigh2","gdp",7876)->country
+tapply(country$gdp, country$gdphigh2, summary)
+```
+Here is another way to create categorical variables
+Here we will create various breakpoints and then use the cut function
+```{r}
+brks <- c(0,40,50,60,70, Inf)  	# Note: 1 
+country$lifespan.range <- cut(country$lifem,
+                          breaks=brks, include.lowest=T) 	# Note: 2 
+summary(country$lifespan.range)
+table(country$lifespan.range)
+```
+Here is a more general dummy variable functoin. This one replaces "na" with zero. Make sure that is what you want! There are no instances where this particular code would make sense with this dataset as there are no categorical source variables but you can use this with survey data which has a long of such variables. I don't actually apply this function here. 
+```{r}
+
+dummygen <- function(a,b,c,d) {
+  
+  a[,b] <- ifelse(a[,c] ==d,1,0)
+  a[,b] <- ifelse(is.na(a[,b]) , 0, a[,b])
+  return(a)
+}
+```
+
+
+Missing values present many issues in data analysis. We'll be dealing with this in future labs.
+Here is how you can visualize missings
+```{r}
+install.packages("VIM")
+library(VIM)
+missings_plot <- aggr(country, col=c('navyblue','red'), only.miss=TRUE, numbers=TRUE, sortVars=TRUE, labels=names(country), gap=3, ylab=c("Histogram of missing data","Pattern"))
+```
+
+You can "fill in" missing values with the "mice" function. Here is how you would do that. I'll explain how this works in lab.  This will take care of most missings except for on some of the new factor variables which should be handled differently
+
+```{r}
+install.packages("mice")
+library(mice)
+set.seed(144) # random number generator
+imputed_country = complete(mice(country))
+missings_plot <- aggr(imputed_country, col=c('navyblue','red'), only.miss=TRUE, numbers=TRUE, sortVars=TRUE, labels=names(imputed_country), gap=3, ylab=c("Histogram of missing data","Pattern"))
+```
+```
+
+
+
+
+
+
+
