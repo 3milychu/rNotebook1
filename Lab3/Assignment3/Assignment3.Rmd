@@ -15,24 +15,67 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
 
-Assignment 3
+##Assignment 3
 Create a New R Notebook and save it as both html format and PDF format. 
 
 Data frame for this assignment:  lowbwt
-1.	List the level of measurement for each of the following variables:
+**1.	List the level of measurement for each of the following variables:**
 
-a.	LOW
-b.	LWT (Weight in Pounds at the Last Menstrual Period)
+a.	LOW: Ordinal-level
+b.	LWT (Weight in Pounds at the Last Menstrual Period): Interval-Ratio
 
-2.	Why is it NOT appropriate to create a crosstab using the two variables in the previous question?
+**2.	Why is it NOT appropriate to create a crosstab using the two variables in the previous question?**
 
-3.	Recode the variable LWT into a new ordinal variable.
+Since LOW is an ordinal-level variable, creating a crosstab using LOW as a variable against LWT, an interval-ratio variable, sums up the count for all binary values at that level, which is not useful information (see below).
 
-4.	Show a frequency table of the new ordinal LWT variable (that you created in #3) and explain your coding scheme.
+```{r}
+table(lowbwt$LWT,lowbwt$LOW, dnn = c("Lbs at LMP", "Low Weight Baby")) 
+```
+**3.	Recode the variable LWT into a new ordinal variable.**
 
-5.	Show a crosstab of Low Birth Weight (LOW) BY Weight in Pounds at the Last Menstrual Period, making sure to use variables at the appropriate levels of measurement.
+```{r}
+summary(lowbwt$LWT)
+hist(lowbwt$LWT)
+quantile(lowbwt$LWT,seq(0,1,0.05),na.rm=TRUE)
+```
+```{r}
 
-6.	Does there appear to be a relationship between Low Birth Weight and Mother's weight in pounds at the last menstrual period? Explain.
+lowbwt$LWTCat[lowbwt$LWT <= 100] <- 1
+lowbwt$LWTCat[lowbwt$LWT > 100 & lowbwt$LWT <= 140] <- 2
+lowbwt$LWTCat[lowbwt$LWT > 140] <- 3
+
+lowbwt$LWTCat <- factor(lowbwt$LWTCat, labels=c('Low:<100 lbs', 'Average:101-140lbs', 'High:140+lbs'))
+```
+
+**4.	Show a frequency table of the new ordinal LWT variable (that you created in #3) and explain your coding scheme.**
+
+```{r}
+table(lowbwt$LWTCat,useNA ="ifany")
+summary(lowbwt$LWT)
+tapply(lowbwt$LWT, lowbwt$LWTCat, summary)
+```
+Coding scheme: Organized LWT into based on indications by 1st and 3rd quartile. Low weight below 100 (slightly below the first quartile), average weight between 100-140, and high weight above 140 (at the third quartile).
+
+**5.	Show a crosstab of Low Birth Weight (LOW) BY Weight in Pounds at the Last Menstrual Period, making sure to use variables at the appropriate levels of measurement.**
+
+```{r}
+table(lowbwt$LOW, lowbwt$LWTCat, dnn = c("LOW", "LWT")) 
+```
+
+
+**6.	Does there appear to be a relationship between Low Birth Weight and Mother's weight in pounds at the last menstrual period? Explain.**
+
+```{r}
+prop.table(table(lowbwt$LWTCat, lowbwt$LOW, dnn = c("LWT", "LOW")), 2) 
+```
+
+There seems to be a slight relationship between LWT and LOW. 
+
+Low LWT makes up 10% of non low-weight babies, Average LWT makes up 63% and High makes up 26.9%. 
+
+This is compared to Low LWT's 18.6% share of low birth weight babies, Average LWT's 61% and High LWT's 20%. 
+
+We can see that there is a slightly higher proportion of babies by low LWT among the low weight babies compared to non-low weight babies.
 
 Submit to Canvas: your answers to these questions AND the R code you used to get the answers.
 
