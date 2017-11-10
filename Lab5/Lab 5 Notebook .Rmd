@@ -1,0 +1,95 @@
+---
+title: "Lab 4 Notebook_ANOVA"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+####DATA: states
+
+#####ANOVA
+
+Level of measurement:
+The dependent variable must be interval-ratio.
+The independent variable must be nominal or ordinal, with more than two categories to be tested.
+
+Example: Test whether the poverty rate differs across regions of the U.S.
+
+Dependent variable: poverty
+Independent variable: region
+
+#####General syntax:
+
+1. Look at the means by category:
+aggregate(y~x, dataset, mean)
+
+2. Use the aov function to compute anova and store the results in the variable anova.results:
+anova.results <- aov(y~x, dataset)
+
+3. Show the table of results:
+summary(anova.results)
+
+```{r}
+# Syntax for this example:
+aggregate(POVERTY~REGION, states, mean)
+anova.results <- aov(POVERTY~REGION, states)
+summary(anova.results)
+```
+
+#####Interpreting the results
+
+Does F-obtained (F value) fall in the critical region? In other words, is the difference statistically significant? If the value of Pr(>F) is smaller than alpha (typically 0.05), we will reject the null hypothesis and there is a statistically significant difference among the four poverty rates represented by the four regions. If the value of Pr(>F) is greater than 0.05, we will fail to reject the null hypothesis.
+
+Technically reporting Independent Sample T-Tests
+
+We examined poverty by region. There is a statistically significant difference in poverty by regions. F(3,46) = 8.284, p = 0.000164, smaller than the significance level 0.05. South has the highest level of poverty rate 13.79% while Northeast has the lowest level of poverty rate 9.59%.
+
+####Advanced
+
+#####Tukey HSD post-hoc test
+ANOVAs will determine if there are significant differences between groups. But it does not tell us where these differences lay. Tukey test will determine where the differences are, allow you to pinpoint what exact groups are actualy significantly different from each other. 
+
+```{r}
+TukeyHSD(anova.results) # Create a set of confidence intervals on the differences between the means of the levels of a factor
+plot(TukeyHSD(anova.results))
+```
+
+
+#####A two-way between subjects ANOVA:
+```{r}
+aov2 <- aov(BWT ~ RACE + SMOKE + RACE:SMOKE, data = lowbwt)
+summary(aov2)
+model.tables(aov2, "means")
+```
+
+###Assignment 5:
+Data frame for this assignment: country
+
+1. Conduct the appropriate hypothesis test to determine if there is a statistically significant difference in female life expectancy 2004 based on HDI Category.
+
+a. Use variables at the appropriate level of measurement.
+b. Show R syntax.
+c. Show results tables.
+d. Report technical results.
+e. In one paragraph, comment on the implications of the result of the test. Speculate. Is this relationship cause and effect; why or why not?
+
+2. If you wanted to conduct an ANOVA hypothesis test, but both of your variables were interval-ratio, which of the following tasks would you need to complete in order to be able to conduct the test? Select only one answer:
+
+a. Recode the dependent variable into a nominal or ordinal variable.
+b. Recode the independent variable into a nominal or ordinal variable.
+c. Recode both the dependent and independent variables into nominal or  ordinal variables.
+d. Conduct the test with the two interval-ratio level variables.
+e. Abandon the analysis.
+
+
+
