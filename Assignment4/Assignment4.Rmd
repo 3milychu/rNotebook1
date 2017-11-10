@@ -1,0 +1,62 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### Emily Chu: Assignment 4
+
+Data frame for this assignment:  lowbwt<br><br>
+**1.	List the level of measurement for each of the following variables:**
+
+a.	LOW: ordinal-level
+b.	AGE: interval-ratio
+c.	the new categorical LWT variable that you created in the last assignment: ordinal-level
+
+**2.	Conduct the appropriate hypothesis test to determine if there is a difference in mother's weight in pounds at the last menstrual period between those who had a low birth weight baby and those who did not.**
+
+a.	Use variables at the appropriate level of measurement.
+LWT(y): interval-ratio
+LOW(x): weight at last menstrual period
+b.	Show R syntax.
+c.	Show results table.
+d.	Report technical results.
+e.	Comment on the implications of the result of the test.
+
+```{r}
+aggregate(LWT~LOW, lowbwt, mean)
+```
+```{r}
+t.test(LWT~LOW,lowbwt)
+```
+
+**Technical Results:** The result is statistically significant for t(132.46)=2.5155 at a p-value of 0.01308 with more low birth weight babies coming from mothers with lower weight at the last menstrual period.
+
+**Implications of Results:** In groups of mothers with a mean weight of around 122 lbs at last menstrual period, you can expect more low birth weight babies than in groups of mothers with a mean weight of around 133 lbs at last menstrual period.
+
+**3.	Conduct the appropriate hypothesis test to determine if there is a difference in the birth weight of the baby between those who smoked during pregnancy and those who did not.**
+
+a.	Use variables at the appropriate level of measurement.
+BWT(y): interval-ratio
+SMOKE(x): ordinal-level
+b.	Show R syntax.
+c.	Show results table.
+d.	Report technical results.
+e.	Comment on the implications of the result of the test.
+
+```{r}
+aggregate(BWT~SMOKE, lowbwt, mean)
+```
+```{r}
+t.test(BWT~SMOKE,lowbwt)
+```
+
+
+**Technical Results:** The result is statistically significant for t(170)=2.7095 at a p-value of 0.00743 with babies seeing a lower birth weight in grams from mothers who smoke.
+
+**Implications of Results:** You can expect a significantly lower baby birth weight on average from mothers who smoke than from mothers who don't smoke.
+
+**4.	If you wanted to conduct a two-sample hypothesis test, but both of your variables were interval- ratio, which of the following tasks would you need to complete in order to be able to conduct the test? Select only one answer:**
+
+*b.	Recode the independent variable into a nominal or ordinal variable.*
+
+Submit your work in both HTML file and PDF file (open the HTML file and choose print then save as PDF). 

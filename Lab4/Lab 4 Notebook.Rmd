@@ -1,0 +1,105 @@
+---
+title: "Lab 4_Notebook_t.test"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+DATA: states
+
+Two-Sample Hypothesis Test
+
+Level of measurement:
+∞	The dependent variable must be interval-ratio.
+∞	The independent variable must be nominal or ordinal, with two categories to be tested (this variable can have more than two categories, but with this test you will only be testing for a difference between only two of them).
+
+Compare the variable turnout (% of voting age population that voted) by Regions Northeast and West Dependent variable is turnout and Independent variable is region. This test will determine if there is a difference in average voter turnout between states in the Northeast and states in the West.
+
+General syntax:
+t.test(y~x, dataset)
+
+```{r}
+# Syntax for this example:
+t.test(TURNOUT~REGION, states)
+```
+
+BUT, there is a problem! region has four groups, and t-tests are for two groups!
+
+When testing the difference between two groups when there are more than two, subset the data to include only the two groups that are going to be tested:
+
+```{r}
+states.subset <- states[states$REGION %in% c("Northeast", "West"), ]
+
+```
+
+```{r}
+# or using subset()
+states.subset.1 <- subset(states, REGION == "Northeast" | REGION == "West") 
+```
+
+
+Look at the means differences between the groups:
+```{r}
+aggregate(TURNOUT~REGION, states.subset, mean)
+```
+
+Run the test:
+```{r}
+t.test(TURNOUT~REGION, states.subset)
+```
+
+Interpreting the results
+
+First, evaluate the t score. Here, it is 2.266. Next, is it significant? The p-value is 0.03499. Since this is less than .05 it is significant.
+
+Technically reporting Independent Sample T-Tests
+
+There was a significant effect for region, t(19.517) = 2.266, p = .035 with Northeast having a higher turnout rate than West.
+
+### Assignment 4
+
+Data frame for this assignment:  lowbwt
+1.	List the level of measurement for each of the following variables:
+
+a.	LOW
+b.	AGE
+c.	the new categorical LWT variable that you created in the last assignment
+
+2.	Conduct the appropriate hypothesis test to determine if there is a difference in mother's weight in pounds at the last menstrual period between those who had a low birth weight baby and those who did not.
+
+a.	Use variables at the appropriate level of measurement.
+b.	Show R syntax.
+c.	Show results table.
+d.	Report technical results.
+e.	Comment on the implications of the result of the test.
+
+3.	Conduct the appropriate hypothesis test to determine if there is a difference in the birth weight of the baby between those who smoked during pregnancy and those who did not.
+
+a.	Use variables at the appropriate level of measurement.
+b.	Show R syntax.
+c.	Show results table.
+d.	Report technical results.
+e.	Comment on the implications of the result of the test.
+
+4.	If you wanted to conduct a two-sample hypothesis test, but both of your variables were interval- ratio, which of the following tasks would you need to complete in order to be able to conduct the test? Select only one answer:
+
+a.	Recode the dependent variable into a nominal or ordinal variable.
+b.	Recode the independent variable into a nominal or ordinal variable.
+c.	Recode both the dependent and independent variables into nominal or ordinal variables.
+d.	Abandon the analysis.
+
+## Submit your work in both HTML file and PDF file (open the HTML file and choose print then save as PDF). 
+
+
+
+
