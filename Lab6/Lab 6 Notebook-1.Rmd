@@ -1,0 +1,113 @@
+---
+title: "Lab 6 Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+####DATA: states
+#####Chi Square
+Level of measurement:
+ The dependent variable must be nominal or ordinal.
+ The independent variable must be nominal or ordinal.
+ 
+Does poverty vary by region? In this example, we are going to use the Chi-Square test for independence to determine whether there is a significant association between poverty and regions.
+
+Dependent variable: POVERTY (recoded to ordinal)
+Independent variable: REGION
+
+#####states$POVERTY is interval-ratio, and Chi Square requires a nominal/ordinal dependent variable.
+
+First, recode POVERTY (only need to do this is your dependent variable is interval-ratio):
+
+```{r}
+
+# Step 1: look at the distribution of POVERTY
+summary(states$POVERTY)
+hist(states$POVERTY)
+
+# Step 2: coding scheme
+states$poverty.ordinal2[states$POVERTY <= 10.5] <- 1
+states$poverty.ordinal2[states$POVERTY > 10.5] <- 2
+
+# Step 3: labels
+states$poverty.ordinal2 <- factor(states$poverty.ordinal2,
+labels=c("Low poverty (<=10.5)", "High poverty (>10.5)"))
+
+# Step 4: check your work
+table(states$poverty.ordinal2, states$REGION)
+prop.table(table(states$poverty.ordinal2, states$REGION), 2) # column percentages
+```
+
+Second, Chi-square test
+
+General syntax:
+chisq.test(x, correct=FALSE) # where "x" is a crosstab
+
+```{r}
+options(scipen = 999) # to get rid of scientific notation. Usually run this function in the begining of your analysis. 
+chisq.test(table(states$poverty.ordinal2, states$REGION), correct=FALSE)
+
+chisq.test(table(states$poverty.ordinal2, states$REGION))
+```
+
+```{r}
+chisq.test(table(states$poverty.ordinal, states$REGION))
+```
+
+##### The CrossTable we learned before actually has the Chi Square test.
+
+```{r}
+library(gmodels)
+
+CrossTable(states$poverty.ordinal2, states$REGION, expected=TRUE, format="SPSS")
+```
+
+#####Interpreting the results
+
+Null hypothesis: poverty level and regions are independent.
+Alternative Hypothesis: poverty level and regions are not independent.
+
+Check whether the p-value is less than 0.05. If it is less than significance level 0.05, it means that there is a statistically significant association/relationship between poverty level and regions. If the p-value greater than 0.05, we will fail to reject the null hypothesis.
+
+#####Technically reporting Chi Square:
+X2(3, N = 50) = 21.342, p < .001. There is a significant relationship between poverty level and regions.
+
+Poverty level varies by regions. At a 95% confidence level, States in Midwest and Northeast are more likely to have a low poverty rate while states in South and West are more likely to have a high poverty rate.
+
+
+
+#### Lab 6 Assignments
+
+Data frame for this assignment: drugtreatment
+
+1. Conduct the appropriate hypothesis test to determine if there is a significant difference in IV drug use history at admission by race.
+
+a. Use variables at the appropriate level of measurement.
+b. Show R syntax.
+c. Show results tables.
+d. Report technical results.
+e. In one paragraph, comment on the implications of the result of the test. Make observations. Speculate.
+
+2. If you wanted to conduct a Chi-Square hypothesis test, but both of your variables were intervalratio, which of the following tasks would you need to complete in order to be able to conduct the test? Select only one answer:
+
+a. Recode the dependent variable into a nominal or ordinal variable.
+b. Recode the independent variable into a nominal or ordinal variable.
+c. Recode both the dependent and independent variables into nominal or ordinal variables.
+d. Conduct the test with the two interval-ratio level variables.
+e. Abandon the analysis
+
+
+
+
+
