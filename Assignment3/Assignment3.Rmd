@@ -26,7 +26,7 @@ b.	LWT (Weight in Pounds at the Last Menstrual Period): Interval-Ratio
 
 **2.	Why is it NOT appropriate to create a crosstab using the two variables in the previous question?**
 
-Since LOW is an ordinal-level variable, creating a crosstab using LOW as a variable against LWT, an interval-ratio variable, sums up the count for all binary values at that level, which is not useful information (see below).
+Crosstab can only be used for describing categorical variables (nominal or ordinal), while LWT is interval ratio so it is not appropriate.
 
 ```{r}
 table(lowbwt$LWT,lowbwt$LOW, dnn = c("Lbs at LMP", "Low Weight Baby")) 
@@ -64,6 +64,10 @@ table(lowbwt$LOW, lowbwt$LWTCat, dnn = c("LOW", "LWT"))
 
 
 **6.	Does there appear to be a relationship between Low Birth Weight and Mother's weight in pounds at the last menstrual period? Explain.**
+```{r}
+##Correction
+prop.table(table(lowbwt$LOW, lowbwt$LWTCat), 2) 
+```
 
 ```{r}
 prop.table(table(lowbwt$LWTCat, lowbwt$LOW, dnn = c("LWT", "LOW")), 2) 

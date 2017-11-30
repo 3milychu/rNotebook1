@@ -1,0 +1,41 @@
+---
+title: "Emily Chu Assignment 6"
+output: html_notebook
+---
+
+#### Lab 6 Assignment
+
+Data frame for this assignment: drugtreatment
+<br><br>
+**1. Conduct the appropriate hypothesis test to determine if there is a significant difference in IV drug use history at admission by race.**
+
+a. Use variables at the appropriate level of measurement.
+b. Show R syntax.
+c. Show results tables.
+d. Report technical results.
+e. In one paragraph, comment on the implications of the result of the test. Make observations. Speculate.
+
+```{r}
+options(scipen = 999)
+table(drugtreatment$IVHX, drugtreatment$RACE)
+
+chisq.test(table(drugtreatment$IVHX,drugtreatment$RACE)) ##chisquare test
+
+library(gmodels) ##crosstable 
+CrossTable(drugtreatment$IVHX, drugtreatment$RACE, expected=TRUE, format="SPSS")
+```
+
+*Technical Results*<br>
+Null Hypothesis: IV drug use history at admission and race are independent
+Alternate Hypothesis: IV drug use history at admission and race are not independent
+
+Reject the null hypothesis for X2(2, N = 575) = 24.368, p < .001.
+There is a significant relationship between IV drug use history at admission and race.
+
+*Implications*<br>
+Assuming Race 0 = white and 1 = nonwhite (metadata does not define), nonwhites are more likely to report ivhx = 1 and less likely to report ivhx = 3.
+
+**2. If you wanted to conduct a Chi-Square hypothesis test, but both of your variables were intervalratio, which of the following tasks would you need to complete in order to be able to conduct the test? Select only one answer:**
+
+c. Recode both the dependent and independent variables into nominal or ordinal variables.
+
