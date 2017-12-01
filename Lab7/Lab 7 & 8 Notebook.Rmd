@@ -1,0 +1,199 @@
+---
+title: "Lab 7 & 8 Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+### DATA: state_cor (Download it from Canvas)
+
+##### 1. a. Pearon's R
+
+Are Median family income and % of population with college degree correlated? 
+
+```{r}
+options(scipen=999) # get rid of scientific notation
+
+cor(states_cor$MDFAMINC, states_cor$COLLGRAD, method="pearson", use="complete.obs")
+cor.test(states_cor$MDFAMINC, states_cor$COLLGRAD) # give us the p - value, is it significant?
+# What does R squared tell us?
+CE <- cor(states_cor$MDFAMINC, states_cor$COLLGRAD, method="pearson", use="complete.obs")
+CE^2 
+```
+
+61.42% of variation in median family income is explained by % of population with college degree. 
+
+##### 1. b. Correlation Matrix
+
+What if we want to look at correlations across all of the variables in the dataset? 
+
+##### First we need to remove variables that do not have numeric values
+
+```{r}
+library(dplyr)
+
+states_ce <- select(states_cor, -STATE, -REGION)
+```
+
+Or
+```{r}
+states_cor$STATE <- NULL
+states_cor$REGION <- NULL
+```
+
+###### Now we can continue our analysis. First we name the correlation matrix.
+
+```{r}
+corrmatrix <- cor(states_ce, use="complete.obs")
+View(corrmatrix)
+```
+
+##### 1. c. Correlation Matrix Visualization
+
+```{r}
+install.packages('corrplot')
+library(corrplot)
+
+corrplot(corrmatrix, method="circle") # corrmatrix is the name of the correlation matrix we created above
+
+corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
+#number.cex changes the size of the number fonts. tl.cex changes the size of the labels
+
+corrplot(corrmatrix, type="lower")
+```
+
+##### 2. Regression
+
+General syntax: 
+
+lm(y ~ x, data = the name of dataset) # simple regression. y is the dependent variable, x is the independent variable. 
+
+lm(y ~ x1 + x2 + x3 + ... + xk, data = dataset) # multiple regression. x1, x2..xk are all the independent variables.
+
+##### 2. a. Unadjusted regression / Simple Regression
+
+```{r}
+regression_1 <- lm(MDFAMINC ~ COLLGRAD, data = states_cor)
+
+#R default regression output:
+summary(regression_1)
+```
+
+##### 2. b. Adjusted impact model / Multiple Regression
+```{r}
+regression_2 <- lm(MDFAMINC ~ COLLGRAD + URBAN + DENSITY + TEENMOM + DOCTORS + HSGRAD, data = states_cor)
+
+#R default output:
+summary(regression_2)
+```
+
+##### 2.c. standardized coefficients
+
+general syntax
+
+lm(scale(y) ~ scale(x1) + scale(x2) + ….scale(xk), data = dataset name) # y is the dependent variable and x1 ~ xk are all the independent variables.
+
+```{r}
+lm(scale(MDFAMINC) ~ scale(COLLGRAD) + scale(URBAN) + scale(DENSITY) + scale(TEENMOM) + scale(DOCTORS) + scale(HSGRAD), data = states_cor)
+```
+
+##### Advanced: 2.d. 'sjPlot' and 'Stargazer' packages in showing a better format of the regression output
+
+```{r}
+install.packages("sjPlot")
+install.packages("stargazer")
+
+library(sjPlot)
+library(stargazer)
+```
+
+```{r}
+#Here is the unadjusted regression model output using the `sjPlot` package.
+
+sjt.lm(regression_1, 
+       show.header = TRUE,
+       p.numeric = FALSE,
+       show.se = TRUE,
+       show.fstat = TRUE, 
+       string.est = "Estimate",
+       string.ci = "Conf. Int.",
+       string.dv = "Unadjusted Regression Model",
+       depvar.labels = c("Median family income"),
+       pred.labels = c("% of population with college degree"))
+```
+
+
+```{r}
+#Here is the adjusted regression model output using the `sjPlot` package
+sjt.lm(regression_2, 
+       show.header = TRUE,
+       p.numeric = FALSE,
+       show.se = TRUE,
+       digits.se = 3,
+       show.fstat = TRUE, 
+       string.est = "Estimate",
+       string.ci = "Conf. Int.",
+       string.dv = "Adjusted Regression Model",
+       depvar.labels = c("Median family income"),
+       pred.labels = c("% of population with college degree", "% of population urban", "DensityPopulation per square mile",
+                       "% of all births to teen moms", "Number of Drs per 100,000 population", "% of population with HS degree"))
+```
+
+```{r}
+#3. Showing the unadjusted and adjusted regression results side by side
+
+#stargazer package
+stargazer(regression_1, regression_2, title="Regression Results", dep.var.labels=c("Median family income"), type="text")
+
+#sjPlot package:
+sjt.lm(regression_1, regression_2, 
+       show.header = TRUE,
+       p.numeric = FALSE,
+       show.se = TRUE,
+       digits.se = 3,
+       show.fstat = TRUE, 
+       group.pred = FALSE,
+       string.est = "Estimate",
+       string.ci = "Conf. Int.",
+       string.dv = "Regression Results",
+       depvar.labels = c("Unadjusted Regression Model", "Adjusted Regression Model"),
+       pred.labels = c("% of population with college degree", "% of population urban", "DensityPopulation per square mile",
+                       "% of all births to teen moms", "Number of Drs per 100,000 population", "% of population with HS degree"))
+
+```
+
+# Assignment
+
+Data frame for this assignment:  empdat_cor (download from Canvas)
+
+
+##### Part I Correlation
+
+1.	What is the appropriate measure(s) of association/correlation for current salary and education? Why?
+
+2.	Generate the appropriate measures(s) of association/correlation for current salary and education. Is the relationship significant? Why?
+
+3.	Choose one of the three visualization plots to show the correlation matrix for all the variables in the dataset empdat_cor. Which two variables have the strongest correlation relationship? 
+
+##### Part II Simple Regression
+
+1.	Generate and interpret a simple regression model for the relationship between current salary and age. Using the ‘sjPlot’ package to show the regression output.
+
+a.	Show your regression model output.
+b.	How much variance in salary can be explained by age?
+c.	Is age a significant predictor of salary? How do you know?
+d.	If someone’s age increased by one year, by how much would you expect their salary to change?
+e.	Is the model significant? Why?
+f.	Speculate on the nature of the relationship between age and salary in this dataset.
+ 
+Submit to Canvas: your answers to these questions AND the R code you used to get the answers.
