@@ -22,12 +22,19 @@ When you save the notebook, an HTML file containing the code and output will be 
 Are Median family income and % of population with college degree correlated? 
 
 ```{r}
-options(scipen=999) # get rid of scientific notation
+# get rid of scientific notation
+options(scipen=999)
 
+# outputs correlation coefficient between mdfaminc and collgrad
 cor(states_cor$MDFAMINC, states_cor$COLLGRAD, method="pearson", use="complete.obs")
-cor.test(states_cor$MDFAMINC, states_cor$COLLGRAD) # give us the p - value, is it significant?
+
+# give us the p - value, is it significant?
+cor.test(states_cor$MDFAMINC, states_cor$COLLGRAD)
+
 # What does R squared tell us?
 CE <- cor(states_cor$MDFAMINC, states_cor$COLLGRAD, method="pearson", use="complete.obs")
+
+##r-squared value
 CE^2 
 ```
 
@@ -40,8 +47,10 @@ What if we want to look at correlations across all of the variables in the datas
 ##### First we need to remove variables that do not have numeric values
 
 ```{r}
+install.packages('dplyr')
 library(dplyr)
 
+#remove variables State and Region from dataset states_cor and create new dataset states_ce
 states_ce <- select(states_cor, -STATE, -REGION)
 ```
 
@@ -76,17 +85,26 @@ corrplot(corrmatrix, type="lower")
 
 General syntax: 
 
-lm(y ~ x, data = the name of dataset) # simple regression. y is the dependent variable, x is the independent variable. 
+```{r}
+#lm = linear model
+# simple regression. y is the dependent variable, x is the independent variable. 
+lm(y ~ x, data = "the name of dataset")
 
-lm(y ~ x1 + x2 + x3 + ... + xk, data = dataset) # multiple regression. x1, x2..xk are all the independent variables.
+# multiple regression. x1, x2..xk are all the independent variables.
+lm(y ~ x1 + x2 + x3 + ... + xk, data = dataset)
+```
+
 
 ##### 2. a. Unadjusted regression / Simple Regression
 
 ```{r}
-regression_1 <- lm(MDFAMINC ~ COLLGRAD, data = states_cor)
+regression_mdfaminc_collgrad <- lm(MDFAMINC ~ COLLGRAD, data = states_cor)
 
 #R default regression output:
-summary(regression_1)
+summary(regression_mdfaminc_collgrad)
+# where estimate std. = slope
+# where multiple r-squared is included in analysis, explained, % of variation in analysis
+# where f-statistic applies to unexplained 
 ```
 
 ##### 2. b. Adjusted impact model / Multiple Regression

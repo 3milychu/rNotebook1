@@ -18,9 +18,11 @@ e. In one paragraph, comment on the implications of the result of the test. Make
 ```{r}
 options(scipen = 999)
 table(drugtreatment$IVHX, drugtreatment$RACE)
+prop.table(table(drugtreatment$IVHX, drugtreatment$RACE),2)
 
 chisq.test(table(drugtreatment$IVHX,drugtreatment$RACE)) ##chisquare test
 
+install.packages('gmodels')
 library(gmodels) ##crosstable 
 CrossTable(drugtreatment$IVHX, drugtreatment$RACE, expected=TRUE, format="SPSS")
 ```
