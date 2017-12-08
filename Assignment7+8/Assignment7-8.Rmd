@@ -1,0 +1,95 @@
+---
+title: "Emily Chu Assignment 7&8"
+output: html_notebook
+---
+
+# Assignment
+
+Data frame for this assignment:  empdat_cor (download from Canvas)
+
+
+##### Part I Correlation
+
+**1.	What is the appropriate measure(s) of association/correlation for current salary and education? Why?**
+<br>
+Pearson's r - we are testing the strength between two variables.
+
+**2.	Generate the appropriate measures(s) of association/correlation for current salary and education. Is the relationship significant? Why?**
+```{r}
+cor(empdat_cor$salary, empdat_cor$educ, method="pearson", use="complete.obs")
+cor.test(empdat_cor$salary, empdat_cor$educ) # give us the p - value, is it significant?
+# What does R squared tell us?
+CE <- cor(empdat_cor$salary, empdat_cor$educ, method="pearson", use="complete.obs")
+CE^2 
+```
+<br>Yes, the relationship is significant with p-value <2.2e-16. 44% of variation in salary is explained by education and is considered statistically significant.
+<br>
+**3.	Choose one of the three visualization plots to show the correlation matrix for all the variables in the dataset empdat_cor. Which two variables have the strongest correlation relationship?**
+
+```{r}
+library(dplyr)
+corrmatrix <- cor(empdat_cor, use="complete.obs")
+
+install.packages('corrplot')
+library(corrplot)
+
+corrplot(corrmatrix, method="circle") # corrmatrix is the name of the correlation matrix we created above
+
+corrplot.mixed(corrmatrix, number.cex = 0.8, tl.cex = 0.6)
+#number.cex changes the size of the number fonts. tl.cex changes the size of the labels
+
+corrplot(corrmatrix, type="lower")
+```
+
+
+##### Part II Simple Regression
+
+*1.	Generate and interpret a simple regression model for the relationship between current salary and age. Using the ‘sjPlot’ package to show the regression output.*
+<br><br>
+*a.	Show your regression model output.*
+```{r}
+regression_1 <- lm(salary ~ age, data = empdat_cor)
+
+#R default regression output:
+summary(regression_1)
+
+
+install.packages("sjPlot")
+install.packages("stargazer")
+library(sjPlot)
+library(stargazer)
+
+sjt.lm(regression_1, 
+       show.header = TRUE,
+       p.numeric = FALSE,
+       show.se = TRUE,
+       show.fstat = TRUE, 
+       string.est = "Estimate",
+       string.ci = "Conf. Int.",
+       string.dv = "Unadjusted Regression Model",
+       depvar.labels = c("Salary"),
+       pred.labels = c("Age"))
+```
+```
+<br><br>
+
+*b.	How much variance in salary can be explained by age?*<br>
+With a one year increase in age, salary decreases by $211.61.<br>
+About 2.1% variance in salary can be explained by age (unadjusted)
+<br><br>
+
+*c.	Is age a significant predictor of salary? How do you know?*<br>
+Yes. It is significant at the p<.01 level, which meets the standard p<.05 threshold.
+<br><br>
+
+*d.	If someone’s age increased by one year, by how much would you expect their salary to change?*<br>
+21%
+<br><br>
+
+*e.	Is the model significant? Why?<br>*
+Yes, the model is significant because age is a significant predictor of salary.
+<br><br>
+
+*f.	Speculate on the nature of the relationship between age and salary in this dataset.<br>*
+As age increases, salary increases.
+
