@@ -213,6 +213,9 @@ empdat$femdum <- ifelse(empdat$gender =='Female', 1, 0)
 ```{r}
 lm.1 <-lm(salary ~ mindum, data = empdat)
 summary(lm.1)
+
+lm.2 <-lm(salary ~ femdum, data = empdat)
+summary(lm.2)
 ```
 
 
