@@ -1,0 +1,73 @@
+---
+title: "Final Regression Assignment"
+output: html_notebook
+---
+
+### DATA: empdat
+
+The data for this project comes from a file with information about 474 employees hired by a Midwestern bank between 1979 and 1981. The variables included in the empdat dataframe are:  
+a) employee code; b) gender; c) date of birth; d) educational level (years); e) job category; f) current salary; g) beginning salary; h) months since hired; i) previous experience; and j) minority classification. . You can also view the variables using the following syntax: head(empdat); or by looking at the METADATA folder in your R environment.
+
+#### RESEARCH PROBLEM
+
+We know that salaries differ by race and gender. However, we know several other things that we need to put together. Minorities and women (at this bank) have slightly lower education levels. There may be other differences as well. There are also things that we can’t measure that you might want to consider (e.g. performance on the job) in your write up. As we build up the regression model by adding other possible explanatory factors (education, experience, age, minority status, etc) we want to see what happens to the effect of female status (both the coefficient and the significance level)? The single variable regression of current salary on minority status will show a large effect. However some (and maybe much) of this can be explained by other variables. The key question is whether we can explain these differences away or not. The regression puts this all together for you.
+
+STUDENTS MUST WORK INDEPENDENTLY! Evidence of copying (in your explanations) will result in an “F” for the assignment. You can work with others to produce the output. You must work alone in the write-up. The project will be judged based on: a) the quality of the statistical analysis b) the presentation and interpretation of the data and c) timeliness. Students should synthesize the results of the analysis and put forward the most persuasive possible argument for their case (given the data).
+
+##### ASSIGNMENT SUBMISSION
+
+Assignment will be posted on Canvas. You will post you answers in full sentences in Canvas Assignments >> R Final Assignment. Make sure to include all of your R code you used to inform your analysis. Make sure code is well documented using comments so it is easy to follow.
+
+
+### Regression & Interpretation
+
+The following section involves regression: that is, simple and multiple linear regression and model building. Reference Labs 9-10 to guide your syntax for the following questions. You will write the code, and run it in your R notebook. Include output, interpretation, description of results, and answers to short answer question below. The following looks at critically at minority status in relation to current salary. Through regression, you will determine whether the corporation is in fact guilty of discrimination. 
+
+
+#### Part I: Simple & Multiple Regression & Model Building
+
+##### 1.	Minority status regression
+
+a.	Regress beginning salary on minority status.
+b.	Regress current salary on minority status.
+c.	Describe the results in a paragraph.
+
+##### 2.	Current salary regression
+
+a.	Using multiple linear regression, determine the current salary difference between minorities and nonminorities, controlling for the following:
+
+1)	education
+2)	type of job 
+3)	age
+4)	gender (use a female dummy variable)
+5)	time in current job
+6)	previous experience
+
+To do this, you need to build a regression model. Using a hierarchical modeling strategy to build a regression model that best predicts current salary in this bank. Reference Labs 9-10 to guide your syntax for the model building.
+
+i.	Perform basic checks of these variables.
+ii.	Write down the order of entry based on best guess given your knowledge of the field.
+iii.	Add the first variable that you think are most related to current salary.
+iv.	Sequentially build up the model adding variables in the order you specified. Keep track of the variables that are not significant. 
+v.	Write your final regression model equation.
+
+b.	Interpreting your final regression
+
+i.	Report the F statistic, R2, P values.
+
+c.	Interpret the model in a few paragraphs. Interpret all statistics and indicate the implications of the model.
+
+i.	Report whether the model is statistically significant.
+ii.	Interpret the coefficients of the independent variables.
+iii.Report which of the independent variables are not statistically significant when you build up your regression model.
+
+##### 3.	Summarize your conclusions.
+
+a.	Elaborate on your findings. What do the results say about the relationship between minority status and current salary? Gender and current salary?
+b.	Is the corporation guilty of paying minorities a lower salary when controlling for other variables?
+
+##### 4.	Why regression?
+
+a.	Why didn’t we just conduct a t-test to address this research question?
+b.	Is multiple regression better or worse for this analysis? Why or why not?
+

@@ -1,0 +1,218 @@
+---
+title: "Lab 9 & 10 Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+### Dataset: lowbwt
+
+
+
+
+##### Variables: 
+
+LOW:  Low Birth Weight (Nominal, TRUE, FALSE)
+AGE: (IR)
+LWT:  Weight of Mother in Pounds at the Last Menstrual Period (IR) 
+RACE: Race of Mother (Nominal, 3 categories: white, black, other)  
+SMOKE: Smoking status during pregnancy (Nominal, 2 categories: TRUE, FALSE)
+PTL: History of Premature Labor (IR with only a few values (0-3))
+HT: History of Hypertension (Nominal, TRUE, FALSE)
+UI: Presence of Uterine Irritability (Nominal, TRUE, FALSE)
+FTV: Number of Physician Visits during the first trimester of pregnancy (IR) 
+BTW: Birth weight in grams (IR)
+
+
+### Dummy Variables
+
+Since the values of a nominal/ordinal variable do not convey numeric information, such a variable should not be used in a regression model. Instead, each value of the nominal/ordinal variable can be represented in the model with a dummy variable. A dummy variable contains only the values TRUE and FALSE (which are stores as values of 1 and 0), with a value of TRUE indicating that the associated observation has the given nominal/ordinal value. 
+
+Example: What if we wanted to use RACE in a regression model? 
+
+ 
+```{r}
+
+#if you want to use race as a variable in the model, you need to recode it as a dummy variable. 
+#here is a recode as a dummy variable command:
+
+lowbwt$white <- ifelse(lowbwt$RACE == 1, 1, 0)
+lowbwt$black <- ifelse(lowbwt$RACE == 2, 1, 0)
+lowbwt$other <- ifelse(lowbwt$RACE == 3, 1, 0)
+
+```
+
+
+```{r}
+regression_d1 <- lm(BWT ~ black + other, data = lowbwt) 
+summary(regression_d1)
+```
+
+White category as the reference level (value as 0). 
+
+##### Dummy Coding
+
+Race Categories          Raceblack      Raceother
+White(reference level)       0              0
+black                        1              0
+other                        0              1
+
+
+##### Regression Equation: BWT = 3103.74 - 384.05*black - 299.72*other
+
+##### If the baby mother's race is white:
+
+BWT = 3103.74 - 384.05 * 0 - 299.72 * 0 = 3103.74 
+Therefore, the intercept is the mean value of the reference level.
+
+##### If black:
+
+BWT = 3103.74 - 384.05 * 1 - 299.72 * 0 = 2719.69
+
+##### The coefficient of each dummy variable is the difference between the reference group and the dummy group. The birth weight of black mother's baby will be 384.05 less than the weight of white mother's baby. 
+
+What about the other race?
+
+
+
+### Regression
+
+#### Simple Regression
+
+##### Regression birth weight in grams on smoking status
+
+```{r}
+regression_simple <- lm(BWT ~ SMOKE, data = lowbwt) # create the simple regression, BWT is the dependent variable, SMOKE is the independent
+
+summary(regression_simple) # Show the simple regression output
+
+```
+
+Describe the results.
+
+a.	Is the relationship between mother smoking status and birth weight in grams significant? Yes, the relationship is statistically significant
+
+b.	How will a baby's birth weight change if the mother smoked during pregnancy?
+If a mothe smokes, it reduces the BWT by 281.71 grams
+
+c.	How much variation in baby birth weight in grams can be explained by the model / smoking status?
+3.5% variation in BWT can be explained by SMOKE
+
+d.	Is the model significant? How do you know?
+Yes, it is significant with p value <0.00916
+
+#### Multiple Regression & Model Building
+
+##### Using multiple linear regression, determine the baby’s birth weight difference between mothers who smoked and who did not, controlling for the following:
+
+AGE
+LWT
+RACE
+SMOKE
+PTL
+HT
+UI
+FTV
+
+To do so, we need to use a hierarchical modeling strategy to build a multiple regression model that best predicts baby’s birth weight.
+
+##### Step 1: Perform basic checks of the candidate variables. 
+
+```{r}
+install.packages('psych')
+library(psych)
+
+describe(lowbwt) # make sure no outliers or too many missing values
+```
+
+##### Step 2: Write down order of entry based on best guess given your knowledge of field (protection against specification error)
+
+1.	SMOKE
+2.	LWT
+3.	RACE (black and other)
+4.	HT
+5.	AGE
+6.	FTV
+7.	PTL
+8.	UI
+
+##### Step 3: Add first independent variable SMOKE
+```{r}
+regression_1 <- lm (BWT ~ SMOKE, data = lowbwt)
+summary(regression_1)
+```
+
+SMOKE is significant, so keep it.
+
+##### Step 4: Sequentially build up the model adding variables in the order you specified. 
+
+a.	Drop variables that are insignificant unless strong theoretical reason to keep.
+b.	If insignificant variables makes existing variable insignificant just drop the new one.
+c.	If new variable significant makes old variable insignificant, keep both. Theory led you to think the other important, so keep it.
+d.	Keep track of variables which are not significant. This is important to document.
+
+```{r}
+regression_2 <- lm (BWT ~ SMOKE + LWT, data = lowbwt)
+summary(regression_2)
+
+#Both are significant, keep SMOKE and LWT
+
+regression_3 <- lm (BWT ~ SMOKE + LWT + black, data = lowbwt)
+summary(regression_3)
+
+regression_4 <- lm (BWT ~ SMOKE + LWT + black + other, data = lowbwt)
+summary(regression_4)
+
+regression_5 <- lm (BWT ~ SMOKE + LWT + black + other + HT, data = lowbwt)
+summary(regression_5)
+
+regression_6 <- lm (BWT ~ SMOKE + LWT + black + other + HT + AGE, data = lowbwt)
+summary(regression_6)
+
+#AGE is not significant, so drop it off
+
+regression_7 <- lm (BWT ~ SMOKE + LWT + black + other + HT + FTV, data = lowbwt)
+summary(regression_7)
+
+#FTV is not significant, drop it off
+
+regression_8 <- lm (BWT ~ SMOKE + LWT + black + other + HT + PTL, data = lowbwt)
+summary(regression_8)
+
+#PTL is not significant, drop it off
+
+regression_9 <- lm (BWT ~ SMOKE + LWT + black + other + HT + UI, data = lowbwt)
+summary(regression_9)
+
+#All are significant, so regression_9 is your final regression model.
+
+```
+
+Write your final regression model equation:
+
+###### BWT (Expected baby's weight in grams) = 2837.6 - 354.9*SMOKETRUE + 4.239*LWT - 475.8*black -349.9*other - 585.1*HTTRUE - 524.4*UITRU
+
+### Important for your final assignment, how to code the categorical variables that has character values
+
+```{r}
+empdat$mindum <- ifelse(empdat$minority=='Yes', 1, 0)
+empdat$femdum <- ifelse(empdat$gender =='Female', 1, 0)
+
+```
+
+```{r}
+lm.1 <-lm(salary ~ mindum, data = empdat)
+summary(lm.1)
+```
+
+
